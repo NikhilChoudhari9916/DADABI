@@ -1,0 +1,9 @@
+{
+	"name": "nikhiladfchinook",
+	"location": "northcentralus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "2b694428-61aa-40c4-8136-e4025e567f2d",
+		"tenantId": "a8eec281-aaa3-4dae-ac9b-9a398b9215e7"
+	}
+}

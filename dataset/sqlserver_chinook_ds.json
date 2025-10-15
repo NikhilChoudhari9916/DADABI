@@ -1,0 +1,38 @@
+{
+	"name": "sqlserver_chinook_ds",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_sqlserver_chinook",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"server_name": "damg7370-server.database.windows.net",
+				"db_name": "damg7370db",
+				"user_name": "nikhil_chinook_user"
+			}
+		},
+		"parameters": {
+			"schema_name": {
+				"type": "string",
+				"defaultValue": "CHINOOK"
+			},
+			"table_name": {
+				"type": "string",
+				"defaultValue": "Customer"
+			}
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": {
+				"value": "@dataset().schema_name",
+				"type": "Expression"
+			},
+			"table": {
+				"value": "@dataset().table_name",
+				"type": "Expression"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

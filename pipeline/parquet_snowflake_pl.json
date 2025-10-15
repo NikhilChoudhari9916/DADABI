@@ -1,0 +1,128 @@
+{
+	"name": "parquet_snowflake_pl",
+	"properties": {
+		"activities": [
+			{
+				"name": "snowflake_stg_foreach",
+				"type": "ForEach",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@pipeline().parameters.table_names_array",
+						"type": "Expression"
+					},
+					"batchCount": 2,
+					"activities": [
+						{
+							"name": "parquet_to_snowflake_stage",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.00:10:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "ParquetSource",
+									"additionalColumns": [
+										{
+											"name": "Created_By",
+											"value": {
+												"value": "@pipeline().parameters.username",
+												"type": "Expression"
+											}
+										},
+										{
+											"name": "Created_Dt",
+											"value": {
+												"value": "@utcNow()",
+												"type": "Expression"
+											}
+										}
+									],
+									"storeSettings": {
+										"type": "AzureBlobStorageReadSettings",
+										"recursive": true,
+										"enablePartitionDiscovery": false
+									},
+									"formatSettings": {
+										"type": "ParquetReadSettings"
+									}
+								},
+								"sink": {
+									"type": "SnowflakeV2Sink",
+									"importSettings": {
+										"type": "SnowflakeImportCopyCommand"
+									}
+								},
+								"enableStaging": true,
+								"stagingSettings": {
+									"linkedServiceName": {
+										"referenceName": "ls_azure_storage_sas",
+										"type": "LinkedServiceReference"
+									},
+									"path": "stagedatachinook"
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "chinoook_parquet_ds",
+									"type": "DatasetReference",
+									"parameters": {
+										"container_name": "stagedatachinook",
+										"folder_name": "chinook",
+										"file_name": {
+											"value": "@concat(\n    item(), '.parquet'\n)",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "SnowflakeTable1",
+									"type": "DatasetReference",
+									"parameters": {
+										"schema_name": "STAGE",
+										"table_name": {
+											"value": "@toUpper(item())",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"folder_name": {
+				"type": "string"
+			},
+			"table_names_array": {
+				"type": "array",
+				"defaultValue": [
+					"Artist",
+					"Album",
+					"Genre",
+					"Customer",
+					"Invoice",
+					"InvoiceLine"
+				]
+			},
+			"username": {
+				"type": "string",
+				"defaultValue": "\"Nikhil\""
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2025-10-14T23:03:49Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

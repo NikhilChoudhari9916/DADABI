@@ -1,0 +1,35 @@
+{
+	"name": "ls_sqlserver_chinook",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"parameters": {
+			"server_name": {
+				"type": "string"
+			},
+			"db_name": {
+				"type": "string"
+			},
+			"user_name": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "AzureSqlDatabase",
+		"typeProperties": {
+			"server": "damg7370-server.database.windows.net",
+			"database": "damg7370db",
+			"encrypt": "mandatory",
+			"trustServerCertificate": false,
+			"authenticationType": "SQL",
+			"userName": "nikhil_chinook_user",
+			"password": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "AzureKeyVault1",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "sqlserver-db-nikhil-credentials"
+			}
+		}
+	}
+}

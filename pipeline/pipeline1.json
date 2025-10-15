@@ -1,0 +1,48 @@
+{
+	"name": "pipeline1",
+	"properties": {
+		"activities": [
+			{
+				"name": "Data flow1",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.00:10:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "dataflow1",
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"CustomerStage": {
+								"schema_name": "STAGE",
+								"table_name": "CUSTOMER"
+							},
+							"CustomerDim": {
+								"schema_name": "DW",
+								"table_name": "CUSTOMER_DIM"
+							},
+							"sink1": {
+								"schema_name": "DW",
+								"table_name": "CUSTOMER_DIM"
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"annotations": [],
+		"lastPublishTime": "2025-10-15T03:06:30Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

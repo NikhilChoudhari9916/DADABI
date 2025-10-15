@@ -1,0 +1,109 @@
+{
+	"name": "extract_sql_db_pl",
+	"properties": {
+		"activities": [
+			{
+				"name": "chinook_table_load_source_for_each",
+				"type": "ForEach",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@pipeline().parameters.table_names_array",
+						"type": "Expression"
+					},
+					"batchCount": 2,
+					"activities": [
+						{
+							"name": "sql_2_parquet",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.00:10:00",
+								"retry": 2,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "AzureSqlSource",
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
+								},
+								"sink": {
+									"type": "ParquetSink",
+									"storeSettings": {
+										"type": "AzureBlobStorageWriteSettings"
+									},
+									"formatSettings": {
+										"type": "ParquetWriteSettings"
+									}
+								},
+								"enableStaging": false,
+								"validateDataConsistency": true,
+								"translator": {
+									"type": "TabularTranslator",
+									"typeConversion": true,
+									"typeConversionSettings": {
+										"allowDataTruncation": true,
+										"treatBooleanAsNumber": false
+									}
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "sqlserver_chinook_ds",
+									"type": "DatasetReference",
+									"parameters": {
+										"schema_name": "chinook",
+										"table_name": {
+											"value": "@item()",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "chinoook_parquet_ds",
+									"type": "DatasetReference",
+									"parameters": {
+										"container_name": "stagedatachinook",
+										"folder_name": "chinook",
+										"file_name": {
+											"value": "@concat(\n    item(),'.parquet'\n)",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"table_names_array": {
+				"type": "array",
+				"defaultValue": [
+					"Artist",
+					"Album",
+					"Genre",
+					"MediaType",
+					"Track",
+					"Employee",
+					"Customer",
+					"Invoice",
+					"InvoiceLine",
+					"Playlist",
+					"PlaylistTrack"
+				]
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2025-10-14T19:18:45Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}
